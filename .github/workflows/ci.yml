@@ -16,18 +16,15 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Vérifier le démarrage du workflow
-        run: echo "Le workflow fonctionne."
-
       - name: Récupérer le code
         uses: actions/checkout@v7
-        
+
       - name: Préparer Node.js et le cache npm
         uses: actions/setup-node@v7
         with:
           node-version-file: package.json
           cache: npm
-          
+
       - name: Installer jq
         run: |
           sudo apt-get update
@@ -38,3 +35,23 @@ jobs:
 
       - name: Exécuter les tests
         run: bash ./scripts/run-tests.sh
+
+      - name: Sauvegarder le rapport JUnit
+        if: success() || failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rapport-junit
+          path: test-results/junit.xml
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Afficher les résultats des tests
+        if: success() || failure()
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: test-results/junit.xml
+          annotate_only: true
+          job_summary: true
+          detailed_summary: true
+          fail_on_parse_error: true
+          require_tests: true
