@@ -26,7 +26,7 @@ describe('Home Component', () => {
     const mockData = [
       {
         id: 1,
-        country: 'Francis',
+        country: 'France',
         participations: [
           {
             id: 1,
