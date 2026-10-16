@@ -1,0 +1,57 @@
+name: Tests de l'application
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  CI: "true"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v7
+
+      - name: Préparer Node.js et le cache npm
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: npm
+
+      - name: Installer jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Installer les dépendances du projet
+        run: npm ci
+
+      - name: Exécuter les tests
+        run: bash ./scripts/run-tests.sh
+
+      - name: Sauvegarder le rapport JUnit
+        if: success() || failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rapport-junit
+          path: test-results/junit.xml
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Afficher les résultats des tests
+        if: success() || failure()
+        uses: mikepenz/action-junit-report@v6
+        with:
+          report_paths: test-results/junit.xml
+          annotate_only: true
+          job_summary: true
+          detailed_summary: true
+          fail_on_parse_error: true
+          require_tests: true
