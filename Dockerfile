@@ -1,7 +1,7 @@
 # =========================================
 # Stage 1: Build the React.js Application
 # =========================================
-ARG NODE_VERSION=24.12.0-alpine
+ARG NODE_VERSION=22.12.0-alpine
 ARG NGINX_VERSION=alpine3.22
 
 # Use a lightweight Node.js image for building (customizable via ARG)
@@ -32,7 +32,7 @@ FROM nginxinc/nginx-unprivileged:${NGINX_VERSION} AS runner
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Copy the static build output from the build stage to Nginx's default HTML serving directory
-COPY --chown=nginx:nginx --from=builder /app/dist /usr/share/nginx/html
+COPY --chown=nginx:nginx --from=builder /app/dist /app
 
 # Use a built-in non-root user for security best practices
 USER nginx
