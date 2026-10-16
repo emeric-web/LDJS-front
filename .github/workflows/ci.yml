@@ -1,0 +1,13 @@
+name: Tests de l'application
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Vérifier le démarrage du workflow
+        run: echo "Le workflow fonctionne."
