@@ -1,4 +1,4 @@
-name: Tests de l'application
+name: Tests et publication Docker
 
 on:
   push:
@@ -9,6 +9,8 @@ permissions:
 
 env:
   CI: "true"
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   test:
@@ -55,3 +57,38 @@ jobs:
           detailed_summary: true
           fail_on_parse_error: true
           require_tests: true
+
+  build:
+    needs: test
+    if: github.event_name == 'push' && github.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v7
+
+      - name: Préparer le nom de l'image
+        run: |
+          repository="${GITHUB_REPOSITORY,,}"
+          branch=$(printf '%s' "$GITHUB_REF_NAME" | sed -E 's/[^a-zA-Z0-9_.-]+/-/g; s/^[.-]+/_/')
+          tag="${branch:0:80}-${GITHUB_SHA:0:7}"
+          echo "IMAGE=$REGISTRY/$repository:$tag" >> "$GITHUB_ENV"
+
+      - name: Se connecter à GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" | docker login "$REGISTRY" \
+            --username "$GITHUB_ACTOR" \
+            --password-stdin
+
+      - name: Construire l'image
+        run: docker build -t "$IMAGE" .
+
+      - name: Publier l'image
+        run: docker push "$IMAGE"
