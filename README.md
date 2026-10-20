@@ -19,7 +19,7 @@ Application React pour visualiser les donnees de participation aux Jeux Olympiqu
 
 ```bash
 git clone <repository-url>
-cd p6-dfsjs-frontend
+cd dfsjs-frontend
 npm install
 ```
 
