@@ -1,6 +1,6 @@
 {
   "name": "ldjs-frontend",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "Olympic Participation Tracker - React 19 frontend for visualizing Olympic Games data",
   "type": "module",
   "scripts": {

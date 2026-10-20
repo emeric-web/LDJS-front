@@ -1,3 +1,17 @@
+## [2.0.0](https://github.com/emeric-web/LDJS-front/compare/v1.1.2...v2.0.0) (2026-10-20)
+
+### ⚠ BREAKING CHANGES
+
+* verify major release
+
+### Features
+
+* verify major release ([663e588](https://github.com/emeric-web/LDJS-front/commit/663e5883415e9e1ec39026d09fc056599373a61f))
+
+### Bug Fixes
+
+* **release:** pin conventionalcommits preset to v8 ([3cb135e](https://github.com/emeric-web/LDJS-front/commit/3cb135e79ccb8b169b5f8f63f2a0cbb72e430230))
+
 ## [1.1.2](https://github.com/emeric-web/LDJS-front/compare/v1.1.1...v1.1.2) (2026-10-20)
 
 
