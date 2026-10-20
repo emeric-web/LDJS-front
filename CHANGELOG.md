@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/emeric-web/LDJS-front/compare/v1.0.0...v1.1.0) (2026-10-20)
+
+
+### Features
+
+* verify semantic release workflow ([88f5b72](https://github.com/emeric-web/LDJS-front/commit/88f5b7221444d3ac3779e0984e94f4299f06616e))
+
 # 1.0.0 (2026-10-20)
 
 
