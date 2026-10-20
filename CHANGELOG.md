@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/emeric-web/LDJS-front/compare/v1.1.0...v1.1.1) (2026-10-20)
+
+
+### Bug Fixes
+
+* verify patch release ([a913b21](https://github.com/emeric-web/LDJS-front/commit/a913b212555b7529b872b54ec0a0035ca462bba7))
+
 # [1.1.0](https://github.com/emeric-web/LDJS-front/compare/v1.0.0...v1.1.0) (2026-10-20)
 
 
