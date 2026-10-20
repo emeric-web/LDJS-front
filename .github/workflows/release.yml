@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Préparer Node.js et le cache npm
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Générer la version et la release GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Récupérer la version publiée
+        id: version
+        run: |
+          tag=$(git tag --points-at HEAD | grep -E '^v[0-9]' | head -n1 || true)
+          echo "value=${tag#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Se connecter à GHCR
+        if: steps.version.outputs.value != ''
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" | docker login "$REGISTRY" \
+            --username "$GITHUB_ACTOR" --password-stdin
+
+      - name: Construire et publier l'image
+        if: steps.version.outputs.value != ''
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          image="$REGISTRY/${GITHUB_REPOSITORY,,}:$VERSION"
+          docker build -t "$image" .
+          docker push "$image"
